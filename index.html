@@ -3,304 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eksplorasi Uang & Lembaga Keuangan</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome untuk Ikon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary: #0f172a;
-            --accent: #10b981;
-            --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #334155;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
-        /* Header & Hero Section */
-        header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            text-align: center;
-            padding: 80px 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        header h1 span {
-            color: #34d399;
-        }
-
-        header p {
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto 25px auto;
-            color: #94a3b8;
-        }
-
-        .cta-btn {
-            background: var(--accent-gradient);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1100px;
-            margin: -40px auto 50px auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Card Sections */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-top: 4px solid #10b981;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-
-        .card i {
-            font-size: 2.5rem;
-            color: #10b981;
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: var(--primary);
-        }
-
-        .card p {
-            font-size: 0.95rem;
-            color: #64748b;
-        }
-
-        /* Galeri Gambar Section */
-        .gallery-section {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .section-desc {
-            color: #64748b;
-            margin-bottom: 30px;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-item {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            height: 200px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .gallery-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white;
-            padding: 15px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        /* Video Section */
-        .video-section {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* Rasio 16:9 */
-            height: 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            margin-top: 20px;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 30px;
-            background: var(--primary);
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        /* Responsif */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.2rem;
-            }
-        }
-    </style>
+    <title>Edukasi Literasi Digital - Cerdas & Bijak Berinternet</title>
+    <!-- Tailwind CSS untuk styling modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
 
-    <!-- Header / Hero -->
-    <header>
-        <h1>Dunia <span>Uang & Lembaga Keuangan</span></h1>
-        <p>Kenali sejarah, fungsi uang, serta peran vital lembaga keuangan dalam menggerakkan perekonomian modern.</p>
-        <a href="#materi" class="cta-btn">Mulai Belajar</a>
+    <!-- HEADER / NAVBAR -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-shield-halved text-2xl"></i>
+                <span class="text-xl font-bold tracking-wide">LiterasiDigital.id</span>
+            </div>
+            <nav class="hidden md:flex space-x-6 font-medium">
+                <a href="#tentang" class="hover:text-indigo-200 transition">Tentang</a>
+                <a href="#karya-siswa" class="hover:text-indigo-200 transition">Karya Siswa</a>
+                <a href="#video-youtube" class="hover:text-indigo-200 transition">Video Edukasi</a>
+                <a href="#tips" class="hover:text-indigo-200 transition">Tips & Trik</a>
+            </nav>
+        </div>
     </header>
 
-    <!-- Konten Utama -->
-    <div class="container" id="materi">
-        
-        <!-- Grid Materi (Uang & Lembaga Keuangan) -->
-        <div class="card-grid">
-            <div class="card">
-                <i class="fa-solid fa-money-bill-wave"></i>
-                <h3>Sejarah & Fungsi Uang</h3>
-                <p>Uang berevolusi dari sistem barter (tukar barang) hingga bentuk uang kertas, digital, dan kripto saat ini. Fungsi utamanya sebagai alat tukar, satuan hitung, dan penyimpan nilai.</p>
-            </div>
+    <!-- HERO SECTION -->
+    <section class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Cerdas, Kreatif, & Aman di Dunia Digital</h1>
+            <p class="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-8">
+                Pelajari cara menyaring informasi, menghindari hoaks, dan menggunakan teknologi secara bijak melalui karya inspiratif siswa dan video edukasi pilihan.
+            </p>
+            <a href="#karya-siswa" class="bg-white text-indigo-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-indigo-50 transition transform hover:-translate-y-0.5">
+                Jelajahi Video <i class="fa-solid fa-arrow-down ml-2"></i>
+            </a>
+        </div>
+    </section>
 
-            <div class="card">
-                <i class="fa-solid fa-landmark"></i>
-                <h3>Bank Sentral</h3>
-                <p>Lembaga independen (seperti Bank Indonesia) yang bertanggung jawab menjaga stabilitas nilai rupiah, mengatur sistem pembayaran, dan mengawasi kestabilan sistem perbankan.</p>
+    <!-- TENTANG LITERASI DIGITAL -->
+    <section id="tentang" class="py-16 container mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">Mengapa Literasi Digital Penting?</h2>
+            <p class="text-slate-600">Di era informasi tanpa batas saat ini, kemampuan memahami, menilai, dan membuat konten digital dengan etika adalah kunci utama keselamatan dan kemajuan kita.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
+                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Saring Sebelum Sharing</h3>
+                <p class="text-slate-600 text-sm">Mampu membedakan berita asli (fakta) dan berita palsu (hoaks) sebelum menyebarkannya ke orang lain.</p>
             </div>
-
-            <div class="card">
-                <i class="fa-solid fa-building-columns"></i>
-                <h3>Bank Umum & Syariah</h3>
-                <p>Lembaga keuangan yang menghimpun dana dari masyarakat dalam bentuk simpanan dan menyalurkannya kembali dalam bentuk kredit atau pembiayaan untuk meningkatkan taraf hidup.</p>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
+                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Keamanan Privasi</h3>
+                <p class="text-slate-600 text-sm">Menjaga data pribadi tetap aman dan memahami batasan dalam membagikan informasi di media sosial.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
+                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Kreativitas Positif</h3>
+                <p class="text-slate-600 text-sm">Memanfaatkan gawai dan internet untuk berkarya, belajar, dan menghasilkan hal-hal yang produktif.</p>
             </div>
         </div>
+    </section>
 
-        <!-- Galeri Gambar -->
-        <div class="gallery-section">
-            <h2 class="section-title">Visualisasi Keuangan</h2>
-            <p class="section-desc">Gambaran aktivitas ekonomi, perbankan, dan instrumen keuangan modern.</p>
-            
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80" alt="Investasi dan Saham">
-                    <div class="gallery-caption">Pasar Modal & Investasi</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" alt="Perbankan Modern">
-                    <div class="gallery-caption">Layanan Perbankan</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" alt="Fintech & Dompet Digital">
-                    <div class="gallery-caption">Fintech & E-Wallet</div>
-                </div>
+    <!-- BAGIAN 1: VIDEO KARYA SISWA-SISWI -->
+    <section id="karya-siswa" class="bg-indigo-50/50 py-16 border-y border-slate-200">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Kreativitas Pelajar</span>
+                <h2 class="text-3xl font-bold text-slate-900 mt-3 mb-2">Video Kampanye Literasi Siswa-Siswi</h2>
+                <p class="text-slate-600">Saksikan video edukasi hasil karya kreatif dari para siswa dalam menyebarkan kesadaran berinternet yang sehat.</p>
             </div>
-        </div>
 
-        <!-- Video Edukasi -->
-        <div class="video-section">
-            <h2 class="section-title">Video Edukasi</h2>
-            <p class="section-desc">Tonton video interaktif berikut untuk memahami bagaimana sistem keuangan bekerja.</p>
-            
-            <div class="video-container">
-                <!-- Contoh Video YouTube mengenai sistem keuangan/perbankan -->
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video Edukasi Keuangan" allowfullscreen></iframe>
-            </div>
-        </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Video Siswa 1 -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-100 flex flex-col">
+                    <div class="aspect-video bg-slate-200 relative">
+                        <!-- Ganti URL iframe dengan video siswa Anda -->
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Karya Siswa 1" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">Kelas X - Kelompok 1</span>
+                            <h3 class="font-bold text-lg text-slate-900 mt-2 mb-1">Bahaya Menyebar Berita Hoaks di Grup WhatsApp</h3>
+                            <p class="text-slate-600 text-sm">Kampanye singkat mengenai pentingnya melakukan cek fakta sebelum meneruskan pesan berantai.</p>
+                        </div>
+                    </div>
+                </div>
 
-    </div>
+                <!-- Video Siswa 2 -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-100 flex flex-col">
+                    <div class="aspect-video bg-slate-200 relative">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Karya Siswa 2" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">Kelas XI - Kelompok 3</span>
+                            <h3 class="font-bold text-lg text-slate-900 mt-2 mb-1">Bijak Mengatur Waktu Layar (Screen Time)</h3>
+                            <p class="text-slate-600 text-sm">Tips mengatur waktu antara belajar, beraktivitas di dunia nyata, dan bermain media sosial.</p>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Edukasi Finansial. Dibuat dengan gaya modern dan elegan.</p>
-    </footer>
-
-</body>
-</html>
+                <!-- Video Siswa 3 -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-100 flex flex-col">
+                    <div class="aspect-video bg-slate-200 relative">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Karya Siswa 3" allowfullscreen></iframe>
+                    </div>

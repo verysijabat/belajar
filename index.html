@@ -1,50 +1,306 @@
-<!doctype html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Laboratorium Gerak</title>
-<style>
-:root{--g:#176b50;--bg:#f3f8f4;--line:#dbe7df;--ink:#20312b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,Arial}header{background:linear-gradient(120deg,#145b47,#238365);color:white;padding:28px 18px}header div,main{max-width:1100px;margin:auto}h1{margin:0 0 5px;font-size:clamp(1.8rem,4vw,2.5rem)}header p{margin:0}main{padding:20px 15px}.grid{display:grid;grid-template-columns:1.25fr .8fr;gap:16px;align-items:start}.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:15px;box-shadow:0 5px 18px #173e2b0b}h2{color:var(--g);font-size:1.12rem;margin:0 0 10px}h3{font-size:1rem;margin:12px 0 6px}.stage{position:relative;background:#17251e;border-radius:10px;overflow:hidden;min-height:210px;display:grid;place-items:center}#videoCanvas{width:100%;height:auto;max-height:520px;cursor:crosshair}#placeholder{position:absolute;color:white;text-align:center;pointer-events:none}.row,.buttons{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}button{border:0;border-radius:9px;padding:9px 13px;background:var(--g);color:white;font:inherit;font-weight:700;cursor:pointer}button.alt{background:#eaf3ed;color:var(--g);border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed}input[type=number]{width:105px;padding:8px;border:1px solid var(--line);border-radius:7px;font:inherit}.hint,small{color:#63746c;font-size:.88rem}.swatch{display:inline-block;width:20px;height:20px;border:1px solid #999;border-radius:4px;vertical-align:middle;background:#ddd}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.stat{background:#f0f7f2;padding:9px;border-radius:9px}.stat small{display:block}.stat b{font-size:1.05rem}#chart{width:100%;height:220px;border:1px solid var(--line);border-radius:9px}table{border-collapse:collapse;width:100%;font-size:.87rem}td,th{text-align:left;padding:7px;border-bottom:1px solid var(--line)}th{background:#eff7f1;color:var(--g)}.scroll{max-height:170px;overflow:auto;border:1px solid var(--line);border-radius:8px}.result{background:#edf7f0;padding:11px;border-radius:9px;margin-top:9px}.note{background:#fff8e8;border-left:4px solid #efb849;padding:10px;border-radius:7px;font-size:.88rem}footer{text-align:center;color:#63746c;padding:15px}@media(max-width:780px){.grid{grid-template-columns:1fr}}
-</style></head><body>
-<header><div><h1>🔬 Laboratorium Gerak</h1><p>Pelacak warna, perekam posisi, kalibrasi, dan analisis percepatan dari webcam.</p></div></header>
-<main><div class="grid"><div>
-<section class="panel"><h2>1. Tampilan webcam</h2><div class="stage"><canvas id="videoCanvas" width="640" height="480"></canvas><div id="placeholder">Webcam belum aktif.<br>Tekan “Mulai Webcam”.</div></div>
-<div class="buttons"><button id="start">▶ Mulai Webcam</button><button id="stop" class="alt" disabled>Matikan Kamera</button><button id="clearTrack" class="alt">Hapus pelacakan</button></div><p class="hint" id="status">● Kamera belum aktif</p><p class="hint">Klik benda pada gambar untuk mengambil sampel warnanya. Aplikasi mencari warna serupa dan menandai titik tengahnya.</p></section>
-<section class="panel"><h2>2. Lacak warna dan posisi</h2><div><span class="swatch" id="swatch"></span> <span id="colorText">Belum ada warna dipilih</span></div>
-<div class="row"><label>Toleransi warna <input id="tol" type="range" min="15" max="110" value="45"></label><b id="tolVal">45</b></div>
-<div class="stats"><div class="stat"><small>Posisi X</small><b id="xpos">—</b></div><div class="stat"><small>Posisi Y</small><b id="ypos">—</b></div><div class="stat"><small>Terdeteksi</small><b id="found">—</b></div></div><p class="hint">Koordinat dalam piksel dari sudut kiri atas gambar. Posisi Y grafik dihitung positif ke atas.</p></section>
-<section class="panel"><h2>3. Rekam data posisi</h2><div class="buttons"><button id="record" disabled>⏺ Mulai Rekam</button><button id="reset" class="alt">Hapus Data</button><button id="csv" class="alt" disabled>Unduh CSV</button></div>
-<p class="hint">Perekaman mengambil posisi sekitar 10 kali per detik.</p><div class="stats"><div class="stat"><small>Waktu</small><b id="elapsed">0.00 s</b></div><div class="stat"><small>Jumlah data</small><b id="count">0</b></div><div class="stat"><small>Skala</small><b id="scale">Belum dikalibrasi</b></div></div>
-<h3>Grafik posisi Y terhadap waktu</h3><canvas id="chart" width="800" height="300"></canvas>
-<h3>Data hasil rekaman</h3><div class="scroll"><table><thead><tr><th>t (s)</th><th>X (px)</th><th>Y (px)</th><th>Y (m)</th></tr></thead><tbody id="rows"><tr><td colspan="4">Belum ada data.</td></tr></tbody></table></div></section>
-</div><div>
-<section class="panel"><h2>4. Kalibrasi piksel ke meter</h2><p class="hint">Klik dua ujung penggaris atau benda yang panjang sebenarnya diketahui.</p><div class="buttons"><button id="cal" class="alt" disabled>Pilih 2 Titik Kalibrasi</button><button id="clearCal" class="alt">Reset Kalibrasi</button></div><p class="hint" id="calStatus">Belum ada titik kalibrasi.</p>
-<div class="row"><label>Panjang sebenarnya (meter):</label><input id="length" type="number" min=".001" step=".001" placeholder="mis. 0.20"></div><div class="buttons"><button id="applyCal" disabled>Terapkan Kalibrasi</button></div><div class="result" id="calResult">Skala: belum tersedia</div><p class="hint">Contoh: 100 piksel mewakili 0,20 meter berarti 500 piksel/meter.</p></section>
-<section class="panel"><h2>5. Analisis percepatan</h2><p class="hint">Fit kuadratik posisi terhadap waktu. Perlu minimal 3 data dan kalibrasi.</p><div class="result" id="fit">Belum ada hasil analisis.</div><p class="note">Model y(t) = A·t² + B·t + C. Percepatan a = 2A. Sumbu Y positif ke atas.</p></section>
-<section class="panel"><h2>Petunjuk</h2><ol class="hint" style="padding-left:20px"><li>Izinkan akses kamera.</li><li>Arahkan kamera ke benda dengan warna kontras.</li><li>Klik benda untuk memilih warna.</li><li>Kalibrasi dengan dua titik berjarak diketahui.</li><li>Tekan Rekam, gerakkan benda, lalu hentikan.</li><li>Lihat grafik/hasil analisis atau unduh CSV.</li></ol><p class="note">Akses webcam biasanya memerlukan HTTPS atau localhost. Jika membuka file langsung dan kamera diblokir browser, jalankan melalui server lokal.</p></section>
-</div></div></main><footer>Media pembelajaran eksperimen gerak • Hasil pelacakan dapat dipengaruhi pencahayaan dan warna latar.</footer>
-<script>
-const $=id=>document.getElementById(id),canvas=$('videoCanvas'),ctx=canvas.getContext('2d',{willReadFrequently:true}),chart=$('chart'),g=chart.getContext('2d'),video=document.createElement('video');
-video.autoplay=true;video.playsInline=true;video.muted=true;
-let stream=null,raf=0,frame=null,color=null,point=null,calMode=false,calPts=[],ppm=null,data=[],recording=false,t0=0,last=0,timer=null;
-async function start(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});video.srcObject=stream;await video.play();canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;$('placeholder').hidden=true;$('start').disabled=true;$('stop').disabled=false;$('cal').disabled=false;$('status').textContent='● Webcam aktif';loop();}catch(e){alert('Tidak dapat membuka kamera. Izinkan akses kamera dan gunakan HTTPS atau localhost. '+e.message);}}
-function stop(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;cancelAnimationFrame(raf);$('start').disabled=false;$('stop').disabled=true;$('placeholder').hidden=false;$('status').textContent='● Kamera dimatikan';if(recording)stopRec();}
-$('start').onclick=start;$('stop').onclick=stop;
-function loop(){if(!stream)return;if(video.readyState>=2){ctx.drawImage(video,0,0,canvas.width,canvas.height);frame=ctx.getImageData(0,0,canvas.width,canvas.height);if(color)track();markers();}raf=requestAnimationFrame(loop);}
-function track(){let d=frame.data,w=frame.width,h=frame.height,t=+$('tol').value,sx=0,sy=0,n=0;for(let y=0;y<h;y+=2)for(let x=0;x<w;x+=2){let k=(y*w+x)*4,dr=d[k]-color.r,dg=d[k+1]-color.g,db=d[k+2]-color.b;if(dr*dr+dg*dg+db*db<t*t*3){sx+=x;sy+=y;n++;}}if(n>4){point={x:sx/n,y:sy/n};$('xpos').textContent=point.x.toFixed(0)+' px';$('ypos').textContent=point.y.toFixed(0)+' px';$('found').textContent='Ya';}else $('found').textContent='Tidak';}
-function markers(){ctx.save();if(calPts.length){ctx.strokeStyle='#ffd34e';ctx.lineWidth=3;calPts.forEach((p,i)=>{ctx.beginPath();ctx.arc(p.x,p.y,8,0,7);ctx.stroke();ctx.fillStyle='#ffd34e';ctx.fillText('K'+(i+1),p.x+10,p.y-8)});if(calPts.length===2){ctx.beginPath();ctx.moveTo(calPts[0].x,calPts[0].y);ctx.lineTo(calPts[1].x,calPts[1].y);ctx.stroke();}}if(point){ctx.strokeStyle='#ff4055';ctx.lineWidth=3;ctx.beginPath();ctx.arc(point.x,point.y,13,0,7);ctx.moveTo(point.x-19,point.y);ctx.lineTo(point.x+19,point.y);ctx.moveTo(point.x,point.y-19);ctx.lineTo(point.x,point.y+19);ctx.stroke();}ctx.restore();}
-canvas.onclick=e=>{if(!stream||!frame)return;let r=canvas.getBoundingClientRect(),x=Math.round((e.clientX-r.left)/r.width*canvas.width),y=Math.round((e.clientY-r.top)/r.height*canvas.height);if(calMode){calPts.push({x,y});$('calStatus').textContent=`Titik kalibrasi ${calPts.length}/2 dipilih`;if(calPts.length===2){calMode=false;$('applyCal').disabled=false;$('calStatus').textContent='Dua titik dipilih. Masukkan panjang sebenarnya.';}return;}let k=(y*canvas.width+x)*4,d=frame.data;color={r:d[k],g:d[k+1],b:d[k+2]};$('swatch').style.background=`rgb(${color.r},${color.g},${color.b})`;$('colorText').textContent=`RGB(${color.r}, ${color.g}, ${color.b})`;$('record').disabled=false;point={x,y};};
-$('tol').oninput=()=>$('tolVal').textContent=$('tol').value;
-$('clearTrack').onclick=()=>{color=null;point=null;$('swatch').style.background='#ddd';$('colorText').textContent='Belum ada warna dipilih';$('xpos').textContent=$('ypos').textContent=$('found').textContent='—';$('record').disabled=true;};
-$('cal').onclick=()=>{calMode=true;calPts=[];$('applyCal').disabled=true;$('calStatus').textContent='Klik titik pertama pada gambar.';};
-$('clearCal').onclick=()=>{ppm=null;calPts=[];calMode=false;$('applyCal').disabled=true;$('calStatus').textContent='Belum ada titik kalibrasi.';$('calResult').textContent='Skala: belum tersedia';$('scale').textContent='Belum dikalibrasi';refresh();};
-$('applyCal').onclick=()=>{let L=+$('length').value;if(!(L>0)||calPts.length!==2)return alert('Isi panjang sebenarnya dan pilih dua titik.');let dist=Math.hypot(calPts[1].x-calPts[0].x,calPts[1].y-calPts[0].y);if(!dist)return alert('Pilih dua titik yang berbeda.');ppm=dist/L;$('calResult').textContent='Skala: '+ppm.toFixed(2)+' piksel/meter';$('scale').textContent=ppm.toFixed(1)+' px/m';refresh();};
-$('record').onclick=()=>recording?stopRec():startRec();
-function startRec(){if(!point)return alert('Pilih warna benda terlebih dahulu.');recording=true;t0=performance.now();last=0;$('record').textContent='■ Hentikan Rekam';timer=setInterval(()=>{let now=performance.now(),t=(now-t0)/1000;$('elapsed').textContent=t.toFixed(2)+' s';if(point&&now-last>95){data.push({t,x:point.x,y:point.y});last=now;refresh();}},30);}
-function stopRec(){recording=false;clearInterval(timer);$('record').textContent='⏺ Mulai Rekam';}
-$('reset').onclick=()=>{if(recording)stopRec();data=[];$('elapsed').textContent='0.00 s';refresh();};
-function refresh(){$('count').textContent=data.length;$('csv').disabled=!data.length;$('rows').innerHTML=data.length?data.slice(-100).map(d=>`<tr><td>${d.t.toFixed(2)}</td><td>${d.x.toFixed(1)}</td><td>${d.y.toFixed(1)}</td><td>${ppm?((canvas.height-d.y)/ppm).toFixed(4):'—'}</td></tr>`).join(''):'<tr><td colspan="4">Belum ada data.</td></tr>';plot();fit();}
-function plot(){let w=chart.width,h=chart.height,p={l:60,r:15,t:15,b:40};g.clearRect(0,0,w,h);g.fillStyle='#fff';g.fillRect(0,0,w,h);if(!data.length){g.fillStyle='#63746c';g.font='16px sans-serif';g.fillText('Data akan muncul setelah perekaman.',180,150);return;}let yy=data.map(d=>ppm?(canvas.height-d.y)/ppm:canvas.height-d.y),tt=data.map(d=>d.t),xmin=0,xmax=Math.max(1,...tt),ymin=Math.min(...yy),ymax=Math.max(...yy);if(ymin===ymax){ymin-=1;ymax+=1;}let X=t=>p.l+t/xmax*(w-p.l-p.r),Y=y=>h-p.b-(y-ymin)/(ymax-ymin)*(h-p.t-p.b);g.strokeStyle='#e3ebe5';g.fillStyle='#52665b';g.font='12px sans-serif';for(let i=0;i<=5;i++){let y=p.t+i*(h-p.t-p.b)/5;g.beginPath();g.moveTo(p.l,y);g.lineTo(w-p.r,y);g.stroke();g.fillText((ymax-i*(ymax-ymin)/5).toFixed(2),4,y+4);g.fillText((xmax*i/5).toFixed(1),X(xmax*i/5)-8,h-17);}g.strokeStyle='#176b50';g.lineWidth=2;g.beginPath();data.forEach((d,i)=>i?g.lineTo(X(d.t),Y(yy[i])):g.moveTo(X(d.t),Y(yy[i])));g.stroke();g.fillStyle='#e08b35';data.forEach((d,i)=>{g.beginPath();g.arc(X(d.t),Y(yy[i]),3,0,7);g.fill();});g.fillStyle='#20312b';g.fillText('Waktu (s)',w/2-25,h-3);g.save();g.translate(14,h/2+20);g.rotate(-Math.PI/2);g.fillText(ppm?'Posisi Y (m)':'Posisi Y (px)',0,0);g.restore();}
-function solve(A,b){let a=A.map((r,i)=>r.concat(b[i]));for(let i=0;i<3;i++){let m=i;for(let j=i+1;j<3;j++)if(Math.abs(a[j][i])>Math.abs(a[m][i]))m=j;[a[i],a[m]]=[a[m],a[i]];if(Math.abs(a[i][i])<1e-12)return null;let z=a[i][i];for(let k=i;k<4;k++)a[i][k]/=z;for(let j=0;j<3;j++)if(j!==i){z=a[j][i];for(let k=i;k<4;k++)a[j][k]-=z*a[i][k];}}return a.map(r=>r[3]);}
-function fit(){if(data.length<3||!ppm){$('fit').textContent='Diperlukan minimal 3 data dan kalibrasi piksel ke meter.';return;}let t0=data[0].t,M=[[0,0,0],[0,0,0],[0,0,0]],b=[0,0,0];data.forEach(d=>{let t=d.t-t0,y=(data[0].y-d.y)/ppm,v=[t*t,t,1];for(let i=0;i<3;i++){b[i]+=v[i]*y;for(let j=0;j<3;j++)M[i][j]+=v[i]*v[j];}});let c=solve(M,b);if(!c){$('fit').textContent='Data belum cukup bervariasi untuk fit kuadratik.';return;}let [A,B,C]=c;$('fit').innerHTML=`<b>y(t) = ${A.toFixed(5)}t² + ${B.toFixed(5)}t + ${C.toFixed(5)}</b><br><b>Percepatan = ${(2*A).toFixed(4)} m/s²</b><br><small>Kecepatan awal fit: ${B.toFixed(4)} m/s. Waktu dihitung sejak data pertama.</small>`;}
-$('csv').onclick=()=>{let lines=['waktu_s,x_px,y_px,posisi_y_m',...data.map(d=>[d.t.toFixed(4),d.x.toFixed(2),d.y.toFixed(2),ppm?((canvas.height-d.y)/ppm).toFixed(5):''].join(','))],blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='data_pergerakan.csv';a.click();URL.revokeObjectURL(url);};
-plot();window.addEventListener('beforeunload',()=>{if(stream)stream.getTracks().forEach(t=>t.stop());});
-</script></body></html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eksplorasi Uang & Lembaga Keuangan</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #10b981;
+            --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header & Hero Section */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        header h1 span {
+            color: #34d399;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 25px auto;
+            color: #94a3b8;
+        }
+
+        .cta-btn {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1100px;
+            margin: -40px auto 50px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Card Sections */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid #10b981;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card i {
+            font-size: 2.5rem;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+
+        /* Galeri Gambar Section */
+        .gallery-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .section-desc {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 200px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Video Section */
+        .video-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Rasio 16:9 */
+            height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-top: 20px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: var(--primary);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Hero -->
+    <header>
+        <h1>Dunia <span>Uang & Lembaga Keuangan</span></h1>
+        <p>Kenali sejarah, fungsi uang, serta peran vital lembaga keuangan dalam menggerakkan perekonomian modern.</p>
+        <a href="#materi" class="cta-btn">Mulai Belajar</a>
+    </header>
+
+    <!-- Konten Utama -->
+    <div class="container" id="materi">
+        
+        <!-- Grid Materi (Uang & Lembaga Keuangan) -->
+        <div class="card-grid">
+            <div class="card">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                <h3>Sejarah & Fungsi Uang</h3>
+                <p>Uang berevolusi dari sistem barter (tukar barang) hingga bentuk uang kertas, digital, dan kripto saat ini. Fungsi utamanya sebagai alat tukar, satuan hitung, dan penyimpan nilai.</p>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-landmark"></i>
+                <h3>Bank Sentral</h3>
+                <p>Lembaga independen (seperti Bank Indonesia) yang bertanggung jawab menjaga stabilitas nilai rupiah, mengatur sistem pembayaran, dan mengawasi kestabilan sistem perbankan.</p>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-building-columns"></i>
+                <h3>Bank Umum & Syariah</h3>
+                <p>Lembaga keuangan yang menghimpun dana dari masyarakat dalam bentuk simpanan dan menyalurkannya kembali dalam bentuk kredit atau pembiayaan untuk meningkatkan taraf hidup.</p>
+            </div>
+        </div>
+
+        <!-- Galeri Gambar -->
+        <div class="gallery-section">
+            <h2 class="section-title">Visualisasi Keuangan</h2>
+            <p class="section-desc">Gambaran aktivitas ekonomi, perbankan, dan instrumen keuangan modern.</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80" alt="Investasi dan Saham">
+                    <div class="gallery-caption">Pasar Modal & Investasi</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" alt="Perbankan Modern">
+                    <div class="gallery-caption">Layanan Perbankan</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" alt="Fintech & Dompet Digital">
+                    <div class="gallery-caption">Fintech & E-Wallet</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Edukasi -->
+        <div class="video-section">
+            <h2 class="section-title">Video Edukasi</h2>
+            <p class="section-desc">Tonton video interaktif berikut untuk memahami bagaimana sistem keuangan bekerja.</p>
+            
+            <div class="video-container">
+                <!-- Contoh Video YouTube mengenai sistem keuangan/perbankan -->
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video Edukasi Keuangan" allowfullscreen></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Edukasi Finansial. Dibuat dengan gaya modern dan elegan.</p>
+    </footer>
+
+</body>
+</html>

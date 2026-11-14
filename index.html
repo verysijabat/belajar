@@ -1,12 +1,196 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kelas Bu Sari</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jelajah Flora dan Fauna Indonesia</title>
+<style>
+:root{--green:#176b50;--mint:#e8f5ee;--gold:#f2b84b;--ink:#20312b;--muted:#61736b;--paper:#fbfdfb;--line:#dce9e1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6}
+header{background:linear-gradient(135deg,#145b47,#238365);color:white;padding:42px 20px 48px;text-align:center}
+header .eyebrow{letter-spacing:.13em;text-transform:uppercase;font-size:.78rem;font-weight:700;opacity:.85}
+header h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.12;margin:10px auto;max-width:850px}
+header p{max-width:700px;margin:12px auto 0;color:#e5f5ec}
+main{max-width:1050px;margin:auto;padding:28px 18px 60px}
+nav{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin:-48px auto 28px;position:relative}
+nav a{background:white;color:var(--green);padding:10px 16px;border-radius:999px;text-decoration:none;font-weight:700;box-shadow:0 5px 18px #123b2920;border:1px solid var(--line)}
+section{scroll-margin-top:18px;margin:28px 0}
+h2{color:var(--green);font-size:1.65rem;margin:0 0 12px}
+.intro{color:var(--muted);margin-top:-4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 7px 22px #173e2b0b}
+.card h3{margin:4px 0 8px;color:var(--green)}
+.emoji{font-size:2.2rem;line-height:1.3}
+.pill{display:inline-block;background:var(--mint);color:var(--green);font-size:.78rem;font-weight:800;padding:4px 10px;border-radius:999px}
+.callout{background:#fff8e8;border-left:5px solid var(--gold);padding:14px 17px;border-radius:10px;margin:18px 0}
+table{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--mint);color:var(--green)}
+tr:last-child td{border-bottom:0}
+.quizbox{background:white;border:1px solid var(--line);border-radius:20px;padding:clamp(18px,4vw,28px);box-shadow:0 10px 30px #173e2b0d}
+.quiztop{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-weight:700}
+.progress{height:9px;background:#e8eee9;border-radius:99px;overflow:hidden;margin:13px 0 22px}
+#bar{height:100%;width:0;background:var(--green);transition:width .25s}
+#question{font-size:1.2rem;font-weight:750;margin:10px 0 16px}
+.answers{display:grid;gap:10px}
+.answer{width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;font:inherit;cursor:pointer;color:var(--ink);transition:.15s}
+.answer:hover:not(:disabled){border-color:var(--green);background:#f5fbf7}
+.answer:disabled{cursor:default;opacity:1}
+.answer.correct{background:#e7f6ec;border-color:#2b9b5f}
+.answer.wrong{background:#fff0ed;border-color:#d66a57}
+#feedback{min-height:48px;margin:14px 0 6px;font-weight:650}
+.controls{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+button.primary{background:var(--green);color:white;border:0;border-radius:11px;padding:11px 18px;font:inherit;font-weight:750;cursor:pointer}
+button.primary:disabled{opacity:.45;cursor:not-allowed}
+#result{display:none;text-align:center;padding:20px 5px}
+#result .score{font-size:2.8rem;color:var(--green);font-weight:850}
+.small{font-size:.9rem;color:var(--muted)}
+footer{text-align:center;padding:22px;color:var(--muted);border-top:1px solid var(--line)}
+@media(max-width:600px){header{padding-top:32px}nav{margin-top:-35px}th,td{padding:10px;font-size:.92rem}}
+</style>
 </head>
 <body>
-  <h1>Selamat datang!</h1>
-  <p>Website kelas IPS.</p>
+<header>
+  <div class="eyebrow">Materi IPS • Indonesia</div>
+  <h1>Jelajah Flora dan Fauna Indonesia</h1>
+  <p>Kenali kekayaan tumbuhan dan hewan Nusantara, lalu uji pengetahuanmu melalui kuis tebak persebaran!</p>
+</header>
+<main>
+<nav aria-label="Navigasi halaman">
+  <a href="#pengertian">Pengertian</a><a href="#wilayah">Tiga Wilayah Persebaran</a><a href="#contoh">Contoh Flora & Fauna</a><a href="#kuis">Mulai Kuis</a>
+</nav>
+
+<section id="pengertian">
+  <h2>🌿 Apa itu flora dan fauna?</h2>
+  <div class="grid">
+    <article class="card"><div class="emoji">🌳</div><h3>Flora</h3><p>Flora adalah seluruh jenis tumbuhan yang hidup di suatu wilayah, misalnya pohon meranti, rafflesia, sagu, dan cendana.</p></article>
+    <article class="card"><div class="emoji">🦜</div><h3>Fauna</h3><p>Fauna adalah seluruh jenis hewan yang hidup di suatu wilayah, misalnya gajah, komodo, anoa, dan burung cenderawasih.</p></article>
+  </div>
+  <div class="callout"><strong>Mengapa persebarannya berbeda?</strong><br>Persebaran flora dan fauna dipengaruhi oleh iklim, suhu, curah hujan, jenis tanah, relief, ketersediaan makanan, serta sejarah geologi dan pemisahan wilayah oleh laut.</div>
+</section>
+
+<section id="wilayah">
+  <h2>🗺️ Tiga wilayah persebaran fauna Indonesia</h2>
+  <p class="intro">Secara umum, persebaran fauna Indonesia dibagi menjadi wilayah Asiatis, Peralihan, dan Australis.</p>
+  <div class="grid">
+    <article class="card">
+      <span class="pill">Wilayah Barat</span><div class="emoji">🐘</div>
+      <h3>1. Asiatis</h3>
+      <p><strong>Wilayah:</strong> Sumatra, Jawa, Kalimantan, dan Bali.</p>
+      <p><strong>Ciri:</strong> Banyak mamalia besar dan primata.</p>
+      <p><strong>Contoh fauna:</strong> gajah Sumatra, harimau Sumatra, orang utan, badak Jawa, tapir.</p>
+      <p><strong>Contoh flora:</strong> meranti, rotan, rafflesia, jati.</p>
+    </article>
+    <article class="card">
+      <span class="pill">Wilayah Tengah</span><div class="emoji">🦎</div>
+      <h3>2. Peralihan (Wallacea)</h3>
+      <p><strong>Wilayah:</strong> Sulawesi, Nusa Tenggara, dan sebagian wilayah Maluku.</p>
+      <p><strong>Ciri:</strong> Memiliki banyak hewan endemik, yaitu hewan khas yang secara alami hanya ditemukan di wilayah tertentu.</p>
+      <p><strong>Contoh fauna:</strong> komodo, anoa, babirusa, burung maleo.</p>
+      <p><strong>Contoh flora:</strong> cendana, eboni, lontar, pala.</p>
+    </article>
+    <article class="card">
+      <span class="pill">Wilayah Timur</span><div class="emoji">🦚</div>
+      <h3>3. Australis</h3>
+      <p><strong>Wilayah:</strong> Papua dan Kepulauan Aru.</p>
+      <p><strong>Ciri:</strong> Banyak burung berwarna mencolok dan hewan berkantung.</p>
+      <p><strong>Contoh fauna:</strong> burung cenderawasih, kasuari, kanguru pohon, kakatua.</p>
+      <p><strong>Contoh flora:</strong> sagu, matoa, kayu putih/eukaliptus.</p>
+    </article>
+  </div>
+  <div class="callout"><strong>Ingat cepat:</strong> Barat = Asiatis • Tengah = Peralihan • Timur = Australis. Garis Wallace dan Garis Weber merupakan garis khayal yang membantu menjelaskan perbedaan persebaran fauna di Indonesia.</div>
+</section>
+
+<section id="contoh">
+  <h2>🔎 Contoh flora dan fauna khas Indonesia</h2>
+  <table>
+    <thead><tr><th>Nama</th><th>Jenis</th><th>Persebaran umum</th><th>Keunikan</th></tr></thead>
+    <tbody>
+      <tr><td>Rafflesia</td><td>Flora</td><td>Sumatra</td><td>Bunga berukuran besar dan berbau kuat.</td></tr>
+      <tr><td>Meranti</td><td>Flora</td><td>Kalimantan dan Sumatra</td><td>Kelompok pohon hutan tropis yang bernilai ekologis dan ekonomi.</td></tr>
+      <tr><td>Cendana</td><td>Flora</td><td>Nusa Tenggara</td><td>Kayunya memiliki aroma khas.</td></tr>
+      <tr><td>Sagu</td><td>Flora</td><td>Maluku dan Papua</td><td>Batangnya menghasilkan bahan pangan.</td></tr>
+      <tr><td>Orang utan</td><td>Fauna</td><td>Sumatra dan Kalimantan</td><td>Primata yang hidup di hutan dan banyak beraktivitas di pepohonan.</td></tr>
+      <tr><td>Komodo</td><td>Fauna</td><td>Nusa Tenggara Timur</td><td>Kadal terbesar yang masih hidup.</td></tr>
+      <tr><td>Anoa</td><td>Fauna</td><td>Sulawesi</td><td>Kerbau kerdil yang merupakan hewan endemik Sulawesi.</td></tr>
+      <tr><td>Cenderawasih</td><td>Fauna</td><td>Papua</td><td>Dikenal karena bulu dan perilaku kawinnya yang khas.</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Catatan: Persebaran pada tabel merupakan contoh umum. Beberapa jenis dapat memiliki wilayah sebaran yang lebih luas atau berbeda menurut spesiesnya.</p>
+</section>
+
+<section id="kuis">
+  <h2>🎯 Kuis tebak persebaran flora dan fauna</h2>
+  <p class="intro">Pilih wilayah persebaran yang tepat. Ada 10 soal. Kerjakan sampai selesai untuk melihat nilaimu.</p>
+  <div class="quizbox">
+    <div id="quiz">
+      <div class="quiztop"><span id="counter">Soal 1 dari 10</span><span id="scorelive">Benar: 0</span></div>
+      <div class="progress"><div id="bar"></div></div>
+      <div id="question"></div>
+      <div class="answers" id="answers"></div>
+      <div id="feedback" aria-live="polite"></div>
+      <div class="controls"><span class="small">Pilih satu jawaban.</span><button class="primary" id="next" disabled>Soal berikutnya →</button></div>
+    </div>
+    <div id="result">
+      <div class="emoji">🏆</div><h3>Kuis selesai!</h3>
+      <div class="score" id="finalscore">0/10</div>
+      <p id="message"></p>
+      <button class="primary" id="restart">Ulangi kuis</button>
+    </div>
+  </div>
+</section>
+</main>
+<footer>Belajar mengenal dan menjaga keanekaragaman hayati Indonesia 🌱</footer>
+<script>
+const questions = [
+ {q:"Gajah Sumatra dan orang utan termasuk fauna wilayah ....",a:["Asiatis","Peralihan","Australis"],c:0,e:"Sumatra dan Kalimantan termasuk wilayah Asiatis."},
+ {q:"Komodo yang hidup di Nusa Tenggara Timur termasuk fauna ....",a:["Asiatis","Peralihan","Australis"],c:1,e:"Komodo merupakan fauna khas wilayah Peralihan."},
+ {q:"Burung cenderawasih dikenal sebagai fauna khas ....",a:["Asiatis","Peralihan","Australis"],c:2,e:"Cenderawasih banyak ditemukan di Papua, wilayah Australis."},
+ {q:"Anoa merupakan hewan endemik dari pulau ....",a:["Jawa","Sulawesi","Sumatra"],c:1,e:"Anoa merupakan hewan khas Sulawesi dan termasuk fauna Peralihan."},
+ {q:"Pohon sagu banyak dijumpai di wilayah ....",a:["Papua dan Maluku","Jawa dan Bali","Sumatra dan Kalimantan"],c:0,e:"Sagu menjadi salah satu tumbuhan penting di Papua dan Maluku."},
+ {q:"Bunga rafflesia yang terkenal di Indonesia banyak ditemukan di ....",a:["Papua","Sumatra","Nusa Tenggara"],c:1,e:"Rafflesia, termasuk Rafflesia arnoldii, dikenal dari wilayah Sumatra."},
+ {q:"Burung maleo merupakan fauna khas ....",a:["Sulawesi","Kalimantan","Papua"],c:0,e:"Maleo adalah burung endemik Sulawesi, wilayah Peralihan."},
+ {q:"Kasuari merupakan contoh fauna wilayah ....",a:["Asiatis","Peralihan","Australis"],c:2,e:"Kasuari hidup di Papua dan kawasan Australis."},
+ {q:"Cendana dikenal sebagai flora khas wilayah ....",a:["Nusa Tenggara","Kalimantan","Sumatra"],c:0,e:"Cendana terkenal berasal dari Nusa Tenggara, khususnya Nusa Tenggara Timur."},
+ {q:"Wilayah yang meliputi Sumatra, Jawa, Kalimantan, dan Bali disebut ....",a:["Australis","Asiatis","Peralihan"],c:1,e:"Keempat pulau tersebut termasuk wilayah fauna Asiatis."}
+];
+let index=0, score=0, chosen=false;
+const $=id=>document.getElementById(id);
+function render(){
+ chosen=false;
+ $("counter").textContent=`Soal ${index+1} dari ${questions.length}`;
+ $("scorelive").textContent=`Benar: ${score}`;
+ $("bar").style.width=`${index/questions.length*100}%`;
+ $("question").textContent=questions[index].q;
+ $("feedback").textContent="";
+ $("next").disabled=true;
+ $("next").textContent=index===questions.length-1?"Lihat hasil":"Soal berikutnya →";
+ $("answers").innerHTML="";
+ questions[index].a.forEach((answer,i)=>{
+   const b=document.createElement("button"); b.className="answer"; b.textContent=String.fromCharCode(65+i)+". "+answer;
+   b.addEventListener("click",()=>select(i)); $("answers").appendChild(b);
+ });
+}
+function select(i){
+ if(chosen)return; chosen=true;
+ const q=questions[index], buttons=[...document.querySelectorAll(".answer")];
+ buttons.forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add("correct");if(j===i&&i!==q.c)b.classList.add("wrong");});
+ if(i===q.c){score++;$("feedback").textContent="Benar! "+q.e;}else{$("feedback").textContent="Belum tepat. "+q.e;}
+ $("scorelive").textContent=`Benar: ${score}`;$("next").disabled=false;
+}
+$("next").addEventListener("click",()=>{
+ if(!chosen)return;
+ index++;
+ if(index<questions.length)render();else finish();
+});
+function finish(){
+ $("quiz").style.display="none";$("result").style.display="block";
+ $("bar").style.width="100%";$("finalscore").textContent=`${score}/${questions.length}`;
+ $("message").textContent=score===questions.length?"Hebat! Semua jawabanmu benar.":score>=7?"Bagus! Kamu sudah memahami sebagian besar persebaran flora dan fauna.":score>=4?"Terus berlatih. Baca kembali bagian tiga wilayah persebaran, lalu coba lagi.":"Ayo pelajari kembali materi dan ulangi kuis untuk meningkatkan nilaimu.";
+}
+$("restart").addEventListener("click",()=>{index=0;score=0;$("result").style.display="none";$("quiz").style.display="block";render();});
+render();
+</script>
 </body>
 </html>
